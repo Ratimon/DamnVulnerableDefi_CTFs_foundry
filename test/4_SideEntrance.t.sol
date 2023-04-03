@@ -3,7 +3,7 @@ pragma solidity =0.8.19;
 
 import {Test} from "@forge-std/Test.sol";
 
-import {DeploySideEntranceScript} from "@script/1_SideEntrance.s.sol";
+import {DeploySideEntranceScript} from "@script/4_DeploySideEntrance.s.sol";
 import {SideEntranceLenderPool} from "@main/SideEntranceLenderPool.sol";
 import {SideEntranceAttacker} from "@main/SideEntranceAttacker.sol";
 
@@ -18,7 +18,6 @@ contract SideEntranceTest is Test, DeploySideEntranceScript {
     SideEntranceAttacker sideentranceAttacker;
 
     function setUp() public {
-
         vm.deal(deployer, 1001 ether);
         vm.deal(attacker, 1 ether);
         
