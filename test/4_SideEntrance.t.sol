@@ -25,13 +25,16 @@ contract SideEntranceTest is Test, DeploySideEntranceScript {
         vm.label(attacker, "Attacker");
 
         DeploySideEntranceScript.run();
+    }
 
+    modifier deposit() {
         vm.startPrank(deployer);
         sideentranceChallenge.deposit{value: 1000 ether}();
         vm.stopPrank(  );
+        _;
     }
 
-    function test_isSolved() public {
+    function test_isSolved() public deposit() {
         vm.startPrank(attacker);
 
         assertEq( address(sideentranceChallenge).balance , 1000 ether);

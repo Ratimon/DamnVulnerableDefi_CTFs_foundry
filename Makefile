@@ -5,6 +5,9 @@ anvil-node:
 anvil-node-auto:
 	anvil --chain-id 1337 --block-time 15
 
+1-unit:
+	forge test --match-path test/1_UnstoppableVault.t.sol -vvv
+
 4-deploy-SideEntrance:
 	forge script DeploySideEntranceScript --rpc-url $(call local_network,8545)  -vvvv --broadcast; \
 
