@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity =0.8.19;
 
-// import {console} from "@forge-std/console.sol";
-
 interface IChallenge {
     function deposit() external payable;
     function withdraw() external;

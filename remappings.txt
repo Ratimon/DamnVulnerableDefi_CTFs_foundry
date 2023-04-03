@@ -3,3 +3,5 @@
 @test/=test/
 @forge-std/=lib/forge-std/src/
 @solady/=lib/solady/
+@openzeppelin/=lib/openzeppelin-contracts/
+@solmate/=lib/solmate/src/
