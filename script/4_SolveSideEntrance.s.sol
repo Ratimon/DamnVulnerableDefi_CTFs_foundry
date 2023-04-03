@@ -2,8 +2,8 @@
 pragma solidity =0.8.19;
 
 import {Script} from "@forge-std/Script.sol";
-import {SideEntranceLenderPool} from "@main/SideEntranceLenderPool.sol";
-import {SideEntranceAttacker} from "@main/SideEntranceAttacker.sol";
+import {SideEntranceLenderPool} from "@main/side-entrance/SideEntranceLenderPool.sol";
+import {SideEntranceAttacker} from "@main/side-entrance/SideEntranceAttacker.sol";
 
 contract SolveSideEntranceScript is Script {
     SideEntranceLenderPool sideentranceChallenge = SideEntranceLenderPool( payable(address(0x8464135c8F25Da09e49BC8782676a84730C318bC)) );

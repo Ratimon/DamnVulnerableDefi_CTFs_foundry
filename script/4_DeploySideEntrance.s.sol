@@ -2,7 +2,7 @@
 pragma solidity =0.8.19;
 
 import {Script} from "@forge-std/Script.sol";
-import {SideEntranceLenderPool} from "@main/SideEntranceLenderPool.sol";
+import {SideEntranceLenderPool} from "@main/side-entrance/SideEntranceLenderPool.sol";
 
 contract DeploySideEntranceScript is Script {
     SideEntranceLenderPool sideentranceChallenge;

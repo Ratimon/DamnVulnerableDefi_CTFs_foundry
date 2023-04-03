@@ -4,8 +4,8 @@ pragma solidity =0.8.19;
 import {Test} from "@forge-std/Test.sol";
 
 import {DeploySideEntranceScript} from "@script/4_DeploySideEntrance.s.sol";
-import {SideEntranceLenderPool} from "@main/SideEntranceLenderPool.sol";
-import {SideEntranceAttacker} from "@main/SideEntranceAttacker.sol";
+import {SideEntranceLenderPool} from "@main/side-entrance/SideEntranceLenderPool.sol";
+import {SideEntranceAttacker} from "@main/side-entrance/SideEntranceAttacker.sol";
 
 contract SideEntranceTest is Test, DeploySideEntranceScript {
 
