@@ -20,6 +20,9 @@ anvil-node-auto:
 cast-balance:
 	cast balance 0x8464135c8f25da09e49bc8782676a84730c318bc \
 
+cast-signature:
+	cast sig "transfer(address,uint256)" \
+
 define local_network
 http://127.0.0.1:$1
 endef
