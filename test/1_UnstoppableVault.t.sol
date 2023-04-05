@@ -31,7 +31,7 @@ contract UnstoppableVaultTest is Test {
 
     function setUp() public {
         vm.startPrank(deployer);
-        vm.deal(deployer, 1001 ether);
+        vm.deal(deployer, 1 ether);
         vm.deal(attacker, 1 ether);
         
         vm.label(deployer, "Deployer");
