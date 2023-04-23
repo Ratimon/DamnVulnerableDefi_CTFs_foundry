@@ -8,6 +8,9 @@ anvil-node-auto:
 1-unit:
 	forge test --match-path test/1_UnstoppableVault.t.sol -vvv
 
+2-unit:
+	forge test --match-path test/2_NaiveReceiver.t.sol -vvv
+
 3-unit:
 	forge test --match-path test/3_Truster.t.sol -vvv
 
