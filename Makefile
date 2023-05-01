@@ -23,6 +23,9 @@ anvil-node-auto:
 4-unit:
 	forge test --match-path test/4_SideEntrance.t.sol -vvv
 
+5-unit:
+	forge test --match-path test/5_Rewarder.t.sol -vvv
+
 cast-balance:
 	cast balance 0x8464135c8f25da09e49bc8782676a84730c318bc \
 

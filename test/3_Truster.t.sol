@@ -8,7 +8,6 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {DamnValuableToken} from "@main/DamnValuableToken.sol";
 import {TrusterLenderPool} from "@main/truster/TrusterLenderPool.sol";
 
-
 contract TrusterTest is Test {
 
     string mnemonic ="test test test test test test test test test test test junk";
