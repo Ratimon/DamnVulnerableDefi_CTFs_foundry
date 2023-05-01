@@ -11,6 +11,8 @@ import {TheRewarderPool} from "@main/the-rewarder/TheRewarderPool.sol";
 import {RewardToken} from "@main/the-rewarder/RewardToken.sol";
 import {AccountingToken} from "@main/the-rewarder/AccountingToken.sol";
 
+import {TheRewarderPoolAttacker} from "@main/the-rewarder/TheRewarderPoolAttacker.sol";
+
 contract RewarderTest is Test {
 
     string mnemonic ="test test test test test test test test test test test junk";
@@ -34,10 +36,10 @@ contract RewarderTest is Test {
 
     uint256 constant TOKENS_IN_LENDER_POOL = 1_000_000 ether;
 
+    TheRewarderPoolAttacker therewarderAttacker;
+
     function setUp() public {
         vm.startPrank(deployer);
-        // vm.deal(deployer, 1 ether);
-        // vm.deal(attacker, 1 ether);
 
         alice = makeAddr("alice");
         bob = makeAddr("bob");
@@ -60,8 +62,6 @@ contract RewarderTest is Test {
         accountingToken = AccountingToken(rewarderPool.accountingToken());
 
         vm.stopPrank(  );
-
-        
     }
 
     modifier beforeEach() {
@@ -122,37 +122,48 @@ contract RewarderTest is Test {
     function test_isSolved( ) public beforeEach() {
         vm.startPrank(attacker);
 
+        vm.warp({newTimestamp: staticTime + 10 days});
+
+        therewarderAttacker = new TheRewarderPoolAttacker(
+            address(rewardToken),
+            address(flashLoanPool),
+            address(rewarderPool),
+            address(liquidityToken),
+            attacker
+        );
+
+        therewarderAttacker.attack();
+
         vm.stopPrank( );
 
-        // assertEq(rewarderPool.roundNumber() ,  3, "Only one round must have taken place");
+        assertEq(rewarderPool.roundNumber() ,  3, "Only one round must have taken place");
 
-        // address[] memory users = new address[](4);
-        // users[0] = alice;
-        // users[1] = bob;
-        // users[2] = charlie;
-        // users[3] = david;
+        address[] memory users = new address[](4);
+        users[0] = alice;
+        users[1] = bob;
+        users[2] = charlie;
+        users[3] = david;
 
-        // for (uint8 i = 0; i < users.length; i++) {
+        for (uint8 i = 0; i < users.length; i++) {
 
-        //     vm.startPrank(users[i]);
-        //     rewarderPool.distributeRewards();
+            vm.startPrank(users[i]);
+            rewarderPool.distributeRewards();
 
-        //     uint256 userRewards = rewardToken.balanceOf(users[i]);
-        //     uint256 delta = userRewards - (rewarderPool.REWARDS()/users.length);
+            uint256 userRewards = rewardToken.balanceOf(users[i]);
+            uint256 delta = userRewards - (rewarderPool.REWARDS()/users.length);
 
-        //     assertLt(delta , 0.01 ether, "Users should get neglegible rewards this round");
-        //     vm.stopPrank(  );
-        // }
+            assertLt(delta , 0.01 ether, "Users should get neglegible rewards this round");
+            vm.stopPrank(  );
+        }
 
-        // assertGt(rewardToken.totalSupply() , rewarderPool.REWARDS());
-        // uint256 playerRewards = rewardToken.balanceOf(attacker);
-        // assertGt(playerRewards , 0);
+        assertGt(rewardToken.totalSupply() , rewarderPool.REWARDS());
+        uint256 playerRewards = rewardToken.balanceOf(attacker);
+        assertGt(playerRewards , 0);
 
-        // uint256 delta = rewarderPool.REWARDS()- playerRewards;
-        // assertLt(delta , 0.1 ether, "The amount of rewards earned should be close to total available amount");
-        // assertEq(liquidityToken.balanceOf(attacker) ,  0, "Balance of DVT tokens in player and lending pool hasn't changed");
-        // assertEq(liquidityToken.balanceOf(address(flashLoanPool)) ,  TOKENS_IN_LENDER_POOL, "Balance of DVT tokens in player and lending pool hasn't changed");
-
+        uint256 delta = rewarderPool.REWARDS()- playerRewards;
+        assertLt(delta , 0.1 ether, "The amount of rewards earned should be close to total available amount");
+        assertEq(liquidityToken.balanceOf(attacker) ,  0, "Balance of DVT tokens in player and lending pool hasn't changed");
+        assertEq(liquidityToken.balanceOf(address(flashLoanPool)) ,  TOKENS_IN_LENDER_POOL, "Balance of DVT tokens in player and lending pool hasn't changed");
     }
 
 }
