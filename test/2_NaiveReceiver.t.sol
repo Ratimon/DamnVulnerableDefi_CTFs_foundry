@@ -11,7 +11,6 @@ import {FlashLoanReceiver} from "@main/naive-receiver/FlashLoanReceiver.sol";
 import {FlashLoanReceiverAttacker} from "@main/naive-receiver/FlashLoanReceiverAttacker.sol";
 
 interface IPool{
-
     function ETH() external view returns (address);
 }
 
