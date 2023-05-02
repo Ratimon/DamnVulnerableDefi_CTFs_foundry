@@ -15,7 +15,6 @@ contract TheRewarderPoolAttacker {
 
     address receiver;
 
-
     constructor(
         address _rewardToken,
         address _loanerPool,

@@ -7,6 +7,7 @@ import {DamnValuableTokenSnapshot} from "@main/DamnValuableTokenSnapshot.sol";
 import {SimpleGovernance} from "@main/selfie/SimpleGovernance.sol";
 import {SelfiePool} from "@main/selfie/SelfiePool.sol";
 
+import {SelfiePoolAttacker} from "@main/selfie/SelfiePoolAttacker.sol";
 
 contract SelfieTest is Test {
 
@@ -17,6 +18,8 @@ contract SelfieTest is Test {
 
     address public attacker = address(11);
 
+    uint256 public staticTime;
+
     DamnValuableTokenSnapshot token;
     SimpleGovernance governance;
     SelfiePool pool;
@@ -24,11 +27,15 @@ contract SelfieTest is Test {
     uint256 constant TOKEN_INITIAL_SUPPLY = 2_000_000 ether;
     uint256 constant TOKENS_IN_POOL = 1_500_000 ether;
 
+    SelfiePoolAttacker selfiepoolAttacker;
+
     function setUp() public {
         vm.startPrank(deployer);
 
         vm.label(deployer, "Deployer");
         vm.label(attacker, "Attacker");
+
+        staticTime = block.timestamp;
 
         token = new DamnValuableTokenSnapshot(TOKEN_INITIAL_SUPPLY);
         governance = new SimpleGovernance(address(token));
@@ -59,8 +66,23 @@ contract SelfieTest is Test {
     function test_isSolved( ) public beforeEach() {
         vm.startPrank(attacker);
 
-        // assertEq(token.balanceOf(attacker), TOKENS_IN_POOL);
-        // assertEq(token.balanceOf(address(pool)), 0);
+        vm.warp({newTimestamp: staticTime + 5 days});
+
+        selfiepoolAttacker = new SelfiePoolAttacker(
+            address(token),
+            address(governance),
+            address(pool),
+            attacker
+        );
+
+        selfiepoolAttacker.attack1();
+
+        vm.warp({newTimestamp: staticTime + 10 days});
+
+        selfiepoolAttacker.attack2();
+
+        assertEq(token.balanceOf(attacker), TOKENS_IN_POOL);
+        assertEq(token.balanceOf(address(pool)), 0);
        
         vm.stopPrank( );
     }
