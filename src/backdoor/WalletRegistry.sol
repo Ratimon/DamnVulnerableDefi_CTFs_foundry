@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity =0.8.19;
 
-import "openzeppelin-contracts/access/Ownable.sol";
-import "openzeppelin-contracts/token/ERC20/IERC20.sol";
-import "@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol";
-import "@gnosis.pm/safe-contracts/contracts/proxies/IProxyCreationCallback.sol";
+import  {Ownable} from "@solady/src/auth/Ownable.sol";
+import {SafeTransferLib} from "@solady/src/utils/SafeTransferLib.sol";
+
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {GnosisSafe} from "@safe/contracts/GnosisSafe.sol";
+import {IProxyCreationCallback, GnosisSafeProxy} from "@safe/contracts/proxies/IProxyCreationCallback.sol";
+
 
 /**
  * @title WalletRegistry
