@@ -29,6 +29,9 @@ anvil-node-auto:
 6-unit:
 	forge test --match-path test/6_Selfie.t.sol -vvv
 
+12-unit:
+	forge test --match-path test/12_Climber.t.sol -vvv
+
 cast-balance:
 	cast balance 0x8464135c8f25da09e49bc8782676a84730c318bc \
 
