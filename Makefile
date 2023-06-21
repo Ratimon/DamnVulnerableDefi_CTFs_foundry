@@ -29,6 +29,9 @@ anvil-node-auto:
 6-unit:
 	forge test --match-path test/6_Selfie.t.sol -vvv
 
+11-unit:
+	forge test --match-path test/11_Backdoor.t.sol -vvvv
+
 12-unit:
 	forge test --match-path test/12_Climber.t.sol -vvv
 

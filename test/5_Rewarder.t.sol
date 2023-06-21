@@ -19,7 +19,7 @@ contract RewarderTest is Test {
     uint256 deployerPrivateKey = vm.deriveKey(mnemonic, "m/44'/60'/0'/0/", 1); //  address = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
     address deployer = vm.addr(deployerPrivateKey);
-    address public attacker = address(11);
+    address attacker;
 
     address alice;
     address bob;
@@ -41,6 +41,7 @@ contract RewarderTest is Test {
     function setUp() public {
         vm.startPrank(deployer);
 
+        attacker = makeAddr("Attacker");
         alice = makeAddr("alice");
         bob = makeAddr("bob");
         charlie = makeAddr("charlie");
