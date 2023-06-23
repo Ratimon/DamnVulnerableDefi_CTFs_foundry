@@ -10,8 +10,7 @@ import {SelfiePool} from "@main/selfie/SelfiePool.sol";
 import {SelfiePoolAttacker} from "@main/selfie/SelfiePoolAttacker.sol";
 
 contract SelfieTest is Test {
-
-    string mnemonic ="test test test test test test test test test test test junk";
+    string mnemonic = "test test test test test test test test test test test junk";
     uint256 deployerPrivateKey = vm.deriveKey(mnemonic, "m/44'/60'/0'/0/", 1); //  address = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
     address deployer = vm.addr(deployerPrivateKey);
@@ -38,15 +37,14 @@ contract SelfieTest is Test {
 
         token = new DamnValuableTokenSnapshot(TOKEN_INITIAL_SUPPLY);
         governance = new SimpleGovernance(address(token));
-        assertEq( governance.getActionCounter() ,1);
+        assertEq(governance.getActionCounter(), 1);
 
         pool = new SelfiePool(address(token), address(governance) );
-        assertEq( address(pool.token()) , address(token));
-        assertEq( address(pool.governance()) , address(governance));
+        assertEq(address(pool.token()), address(token));
+        assertEq(address(pool.governance()), address(governance));
 
-        vm.stopPrank(  );
+        vm.stopPrank();
     }
-
 
     modifier beforeEach() {
         vm.startPrank(deployer);
@@ -56,13 +54,13 @@ contract SelfieTest is Test {
 
         assertEq(token.balanceOf(address(pool)), TOKENS_IN_POOL);
         assertEq(pool.maxFlashLoan(address(token)), TOKENS_IN_POOL);
-        assertEq(pool.flashFee(address(token),0), 0);
+        assertEq(pool.flashFee(address(token), 0), 0);
 
-        vm.stopPrank(  );
+        vm.stopPrank();
         _;
     }
 
-    function test_isSolved( ) public beforeEach() {
+    function test_isSolved() public beforeEach {
         vm.startPrank(attacker);
 
         vm.warp({newTimestamp: staticTime + 5 days});
@@ -82,8 +80,7 @@ contract SelfieTest is Test {
 
         assertEq(token.balanceOf(attacker), TOKENS_IN_POOL);
         assertEq(token.balanceOf(address(pool)), 0);
-       
-        vm.stopPrank( );
-    }
 
+        vm.stopPrank();
+    }
 }

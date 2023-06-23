@@ -3,7 +3,7 @@ pragma solidity =0.8.19;
 
 import {Test} from "@forge-std/Test.sol";
 
-import {ERC1967Proxy} from  "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 import {ADMIN_ROLE, PROPOSER_ROLE} from "@main/climber/ClimberConstants.sol";
 
@@ -14,8 +14,7 @@ import {ClimberVault} from "@main/climber/ClimberVault.sol";
 import {ClimberAttackerVaultImp, ClimberScheduler} from "@main/climber/ClimberAttacker.sol";
 
 contract ClimberTest is Test {
-
-    string mnemonic ="test test test test test test test test test test test junk";
+    string mnemonic = "test test test test test test test test test test test junk";
     uint256 deployerPrivateKey = vm.deriveKey(mnemonic, "m/44'/60'/0'/0/", 1); //  address = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
     address deployer = vm.addr(deployerPrivateKey);
@@ -24,7 +23,7 @@ contract ClimberTest is Test {
     address public sweeper;
 
     uint256 constant VAULT_TOKEN_BALANCE = 10_000_000 ether;
-    
+
     ClimberVault vault;
     ClimberTimelock vaultTimelock;
     DamnValuableToken token;
@@ -47,7 +46,7 @@ contract ClimberTest is Test {
         deal(attacker, 0.1 ether);
         assertEq(attacker.balance, 0.1 ether);
 
-        vm.stopPrank(  );
+        vm.stopPrank();
     }
 
     modifier beforeEach() {
@@ -80,11 +79,11 @@ contract ClimberTest is Test {
         token = new DamnValuableToken();
         token.transfer(address(vault), VAULT_TOKEN_BALANCE);
 
-        vm.stopPrank(  );
+        vm.stopPrank();
         _;
     }
 
-    function test_isSolved( ) public beforeEach() {
+    function test_isSolved() public beforeEach {
         vm.startPrank(attacker);
 
         scheduler = new ClimberScheduler();
@@ -119,7 +118,9 @@ contract ClimberTest is Test {
         // schedule the proposal
         targets[3] = address(scheduler);
         values[3] = 0;
-        data[3] = abi.encodeWithSignature("scheduleOperation(address,address,address,bytes32)", attacker, address(vault), address(vaultTimelock), salt);
+        data[3] = abi.encodeWithSignature(
+            "scheduleOperation(address,address,address,bytes32)", attacker, address(vault), address(vaultTimelock), salt
+        );
 
         vaultTimelock.execute(targets, values, data, salt);
 
@@ -130,8 +131,7 @@ contract ClimberTest is Test {
 
         assertEq(token.balanceOf(address(vault)), 0);
         assertEq(token.balanceOf(attacker), VAULT_TOKEN_BALANCE);
-       
-        vm.stopPrank( );
+
+        vm.stopPrank();
     }
-    
 }

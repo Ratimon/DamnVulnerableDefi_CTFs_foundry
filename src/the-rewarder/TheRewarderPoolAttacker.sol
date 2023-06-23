@@ -7,7 +7,6 @@ import {TheRewarderPool} from "@main/the-rewarder/TheRewarderPool.sol";
 import {RewardToken} from "@main/the-rewarder/RewardToken.sol";
 
 contract TheRewarderPoolAttacker {
-
     DamnValuableToken liquidityToken;
     FlashLoanerPool flashLoanPool;
     TheRewarderPool rewarderPool;
@@ -27,7 +26,6 @@ contract TheRewarderPoolAttacker {
         rewarderPool = TheRewarderPool(_rewarderPool);
         rewardToken = RewardToken(_rewardToken);
         receiver = _receiver;
-       
     }
 
     function attack() external {
@@ -45,5 +43,4 @@ contract TheRewarderPoolAttacker {
         // transfer rewards to attackerWallet
         rewardToken.transfer(receiver, rewardToken.balanceOf(address(this)));
     }
-
 }

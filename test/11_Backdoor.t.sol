@@ -12,10 +12,8 @@ import {GnosisSafeProxyFactory} from "@safe/contracts/proxies/GnosisSafeProxyFac
 
 import {BackdoorAttacker} from "@main/backdoor/BackdoorAttacker.sol";
 
-
 contract BackdoorTest is Test {
-
-    string mnemonic ="test test test test test test test test test test test junk";
+    string mnemonic = "test test test test test test test test test test test junk";
     uint256 deployerPrivateKey = vm.deriveKey(mnemonic, "m/44'/60'/0'/0/", 1); //  address = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
     address deployer = vm.addr(deployerPrivateKey);
@@ -49,8 +47,7 @@ contract BackdoorTest is Test {
         vm.label(charlie, "Charlie");
         vm.label(david, "David");
 
-
-        vm.stopPrank(  );
+        vm.stopPrank();
     }
 
     modifier beforeEach() {
@@ -60,7 +57,7 @@ contract BackdoorTest is Test {
         // Deploy GnosisSafe mastercopy and factory
         masterCopy = new GnosisSafe();
         walletFactory = new GnosisSafeProxyFactory();
-       
+
         vm.label(address(masterCopy), "GnosisSafe");
         vm.label(address(walletFactory), "GnosisSafeProxyFactory");
         vm.label(address(token), "DamnValuableToken");
@@ -81,20 +78,19 @@ contract BackdoorTest is Test {
         );
         vm.label(address(walletRegistry), "WalletRegistry");
 
-
         assertTrue(walletRegistry.beneficiaries(alice));
         assertTrue(walletRegistry.beneficiaries(bob));
         assertTrue(walletRegistry.beneficiaries(charlie));
         assertTrue(walletRegistry.beneficiaries(david));
 
         token.transfer(address(walletRegistry), AMOUNT_TOKENS_DISTRIBUTED);
-        assertEq(token.balanceOf(address(walletRegistry)), AMOUNT_TOKENS_DISTRIBUTED );
-        
-        vm.stopPrank(  );
+        assertEq(token.balanceOf(address(walletRegistry)), AMOUNT_TOKENS_DISTRIBUTED);
+
+        vm.stopPrank();
         _;
     }
 
-    function test_isSolved( ) public beforeEach() {
+    function test_isSolved() public beforeEach {
         vm.startPrank(attacker);
 
         address[] memory beneficiaries = new address[](4);
@@ -106,10 +102,8 @@ contract BackdoorTest is Test {
 
         new BackdoorAttacker(attacker, address(token), address(masterCopy), address(walletFactory), address(walletRegistry), beneficiaries );
 
-        assertEq(token.balanceOf(attacker), AMOUNT_TOKENS_DISTRIBUTED );
+        assertEq(token.balanceOf(attacker), AMOUNT_TOKENS_DISTRIBUTED);
 
-        vm.stopPrank( );
+        vm.stopPrank();
     }
-
-
 }

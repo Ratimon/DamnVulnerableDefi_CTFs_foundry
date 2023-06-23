@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity =0.8.19;
 
-import  {Ownable} from "@solady/src/auth/Ownable.sol";
+import {Ownable} from "@solady/src/auth/Ownable.sol";
 import {SafeTransferLib} from "@solady/src/utils/SafeTransferLib.sol";
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {GnosisSafe} from "@safe/contracts/GnosisSafe.sol";
 import {IProxyCreationCallback, GnosisSafeProxy} from "@safe/contracts/proxies/IProxyCreationCallback.sol";
-
 
 /**
  * @title WalletRegistry
@@ -16,7 +15,7 @@ import {IProxyCreationCallback, GnosisSafeProxy} from "@safe/contracts/proxies/I
  * @dev The registry has embedded verifications to ensure only legitimate Gnosis Safe wallets are stored.
  * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
  */
- contract WalletRegistry is IProxyCreationCallback, Ownable {
+contract WalletRegistry is IProxyCreationCallback, Ownable {
     uint256 private constant EXPECTED_OWNERS_COUNT = 1;
     uint256 private constant EXPECTED_THRESHOLD = 1;
     uint256 private constant PAYMENT_AMOUNT = 10 ether;
@@ -71,7 +70,8 @@ import {IProxyCreationCallback, GnosisSafeProxy} from "@safe/contracts/proxies/I
         external
         override
     {
-        if (token.balanceOf(address(this)) < PAYMENT_AMOUNT) { // fail early
+        if (token.balanceOf(address(this)) < PAYMENT_AMOUNT) {
+            // fail early
             revert NotEnoughFunds();
         }
 
@@ -112,8 +112,9 @@ import {IProxyCreationCallback, GnosisSafeProxy} from "@safe/contracts/proxies/I
         }
 
         address fallbackManager = _getFallbackManager(walletAddress);
-        if (fallbackManager != address(0))
+        if (fallbackManager != address(0)) {
             revert InvalidFallbackManager(fallbackManager);
+        }
 
         // Remove owner as beneficiary
         beneficiaries[walletOwner] = false;
@@ -127,11 +128,7 @@ import {IProxyCreationCallback, GnosisSafeProxy} from "@safe/contracts/proxies/I
 
     function _getFallbackManager(address payable wallet) private view returns (address) {
         return abi.decode(
-            GnosisSafe(wallet).getStorageAt(
-                uint256(keccak256("fallback_manager.handler.address")),
-                0x20
-            ),
-            (address)
+            GnosisSafe(wallet).getStorageAt(uint256(keccak256("fallback_manager.handler.address")), 0x20), (address)
         );
     }
 }

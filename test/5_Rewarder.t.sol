@@ -14,8 +14,7 @@ import {AccountingToken} from "@main/the-rewarder/AccountingToken.sol";
 import {TheRewarderPoolAttacker} from "@main/the-rewarder/TheRewarderPoolAttacker.sol";
 
 contract RewarderTest is Test {
-
-    string mnemonic ="test test test test test test test test test test test junk";
+    string mnemonic = "test test test test test test test test test test test junk";
     uint256 deployerPrivateKey = vm.deriveKey(mnemonic, "m/44'/60'/0'/0/", 1); //  address = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
     address deployer = vm.addr(deployerPrivateKey);
@@ -46,7 +45,7 @@ contract RewarderTest is Test {
         bob = makeAddr("bob");
         charlie = makeAddr("charlie");
         david = makeAddr("david");
-        
+
         vm.label(deployer, "Deployer");
         vm.label(attacker, "Attacker");
         vm.label(alice, "Alice");
@@ -62,21 +61,21 @@ contract RewarderTest is Test {
         rewardToken = RewardToken(rewarderPool.rewardToken());
         accountingToken = AccountingToken(rewarderPool.accountingToken());
 
-        vm.stopPrank(  );
+        vm.stopPrank();
     }
 
     modifier beforeEach() {
         vm.startPrank(deployer);
 
-        assertEq(accountingToken.owner() , address(rewarderPool));
+        assertEq(accountingToken.owner(), address(rewarderPool));
 
         uint256 minterRole = accountingToken.MINTER_ROLE();
-        uint256 snapshotRole =  accountingToken.SNAPSHOT_ROLE();
-        uint256 burnerRole =  accountingToken.BURNER_ROLE();
+        uint256 snapshotRole = accountingToken.SNAPSHOT_ROLE();
+        uint256 burnerRole = accountingToken.BURNER_ROLE();
 
-        assertEq(accountingToken.hasAllRoles(address(rewarderPool), minterRole | snapshotRole | burnerRole ) ,true);
+        assertEq(accountingToken.hasAllRoles(address(rewarderPool), minterRole | snapshotRole | burnerRole), true);
 
-        vm.stopPrank(  );
+        vm.stopPrank();
 
         address[] memory users = new address[](4);
         users[0] = alice;
@@ -90,17 +89,17 @@ contract RewarderTest is Test {
             vm.startPrank(deployer);
 
             liquidityToken.transfer(users[i], depositAmount);
-            vm.stopPrank(  );
+            vm.stopPrank();
             vm.startPrank(users[i]);
-            liquidityToken.approve(address(rewarderPool),depositAmount);
+            liquidityToken.approve(address(rewarderPool), depositAmount);
             rewarderPool.deposit(depositAmount);
 
-            assertEq(accountingToken.balanceOf(users[i]) , depositAmount);
-            vm.stopPrank(  );
+            assertEq(accountingToken.balanceOf(users[i]), depositAmount);
+            vm.stopPrank();
         }
 
-        assertEq(accountingToken.totalSupply() ,  (users.length)*depositAmount);
-        assertEq(rewardToken.totalSupply() ,  0);
+        assertEq(accountingToken.totalSupply(), (users.length) * depositAmount);
+        assertEq(rewardToken.totalSupply(), 0);
 
         vm.warp({newTimestamp: staticTime + 5 days});
 
@@ -110,17 +109,17 @@ contract RewarderTest is Test {
             vm.startPrank(users[i]);
             rewarderPool.distributeRewards();
 
-            assertEq(rewardToken.balanceOf(users[i]) , rewardsInRound/users.length );
-            vm.stopPrank(  );
+            assertEq(rewardToken.balanceOf(users[i]), rewardsInRound / users.length);
+            vm.stopPrank();
         }
 
-        assertEq(rewardToken.totalSupply() , rewardsInRound);
-        assertEq(liquidityToken.balanceOf(attacker) ,  0, " Player starts with zero DVT tokens in balance");
-        assertEq(rewarderPool.roundNumber() ,  2, "Two rounds must have occurred so far");
+        assertEq(rewardToken.totalSupply(), rewardsInRound);
+        assertEq(liquidityToken.balanceOf(attacker), 0, " Player starts with zero DVT tokens in balance");
+        assertEq(rewarderPool.roundNumber(), 2, "Two rounds must have occurred so far");
         _;
     }
 
-    function test_isSolved( ) public beforeEach() {
+    function test_isSolved() public beforeEach {
         vm.startPrank(attacker);
 
         vm.warp({newTimestamp: staticTime + 10 days});
@@ -135,9 +134,9 @@ contract RewarderTest is Test {
 
         therewarderAttacker.attack();
 
-        vm.stopPrank( );
+        vm.stopPrank();
 
-        assertEq(rewarderPool.roundNumber() ,  3, "Only one round must have taken place");
+        assertEq(rewarderPool.roundNumber(), 3, "Only one round must have taken place");
 
         address[] memory users = new address[](4);
         users[0] = alice;
@@ -146,25 +145,29 @@ contract RewarderTest is Test {
         users[3] = david;
 
         for (uint8 i = 0; i < users.length; i++) {
-
             vm.startPrank(users[i]);
             rewarderPool.distributeRewards();
 
             uint256 userRewards = rewardToken.balanceOf(users[i]);
-            uint256 delta = userRewards - (rewarderPool.REWARDS()/users.length);
+            uint256 delta = userRewards - (rewarderPool.REWARDS() / users.length);
 
-            assertLt(delta , 0.01 ether, "Users should get neglegible rewards this round");
-            vm.stopPrank(  );
+            assertLt(delta, 0.01 ether, "Users should get neglegible rewards this round");
+            vm.stopPrank();
         }
 
-        assertGt(rewardToken.totalSupply() , rewarderPool.REWARDS());
+        assertGt(rewardToken.totalSupply(), rewarderPool.REWARDS());
         uint256 playerRewards = rewardToken.balanceOf(attacker);
-        assertGt(playerRewards , 0);
+        assertGt(playerRewards, 0);
 
-        uint256 delta = rewarderPool.REWARDS()- playerRewards;
-        assertLt(delta , 0.1 ether, "The amount of rewards earned should be close to total available amount");
-        assertEq(liquidityToken.balanceOf(attacker) ,  0, "Balance of DVT tokens in player and lending pool hasn't changed");
-        assertEq(liquidityToken.balanceOf(address(flashLoanPool)) ,  TOKENS_IN_LENDER_POOL, "Balance of DVT tokens in player and lending pool hasn't changed");
+        uint256 delta = rewarderPool.REWARDS() - playerRewards;
+        assertLt(delta, 0.1 ether, "The amount of rewards earned should be close to total available amount");
+        assertEq(
+            liquidityToken.balanceOf(attacker), 0, "Balance of DVT tokens in player and lending pool hasn't changed"
+        );
+        assertEq(
+            liquidityToken.balanceOf(address(flashLoanPool)),
+            TOKENS_IN_LENDER_POOL,
+            "Balance of DVT tokens in player and lending pool hasn't changed"
+        );
     }
-
 }

