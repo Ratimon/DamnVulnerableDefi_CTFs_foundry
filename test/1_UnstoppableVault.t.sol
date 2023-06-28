@@ -71,6 +71,7 @@ contract UnstoppableVaultTest is Test {
         vm.startPrank(attacker);
         receiver = new ReceiverUnstoppable(address(vault));
         token.transfer(address(vault), 5 ether);
+        // checking by strict equality with ether / tokens is always dangerous 
         vm.expectRevert(UnstoppableVault.InvalidBalance.selector);
         receiver.executeFlashLoan(100 ether);
 
